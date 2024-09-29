@@ -1,10 +1,11 @@
-import librosa
-import numpy as np
-import subprocess
 import shutil
-import yt_dlp
+import subprocess
 import sys
 from pathlib import Path
+
+import librosa
+import numpy as np
+import yt_dlp
 
 AudioSpectrogram = np.typing.ArrayLike
 
@@ -22,10 +23,12 @@ def load_yt_url(url: str) -> Path:
         "cachedir": "cache/yt/",
         "format": "m4a",
         "outtmpl": str(out),
-        "postprocessors": [{  # Extract audio using ffmpeg
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "m4a",
-        }],
+        "postprocessors": [
+            {  # Extract audio using ffmpeg
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "m4a",
+            }
+        ],
     }
     with yt_dlp.YoutubeDL(yt_opts) as ydl:
         error_code = ydl.download(url)

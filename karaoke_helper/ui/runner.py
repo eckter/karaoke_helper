@@ -8,7 +8,7 @@ class Runner:
     def run(self):
         pygame.init()
 
-        pygame.display.set_caption('karaoke helper.')
+        pygame.display.set_caption("karaoke helper.")
         window_surface = pygame.display.set_mode((800, 600))
 
         is_running = True

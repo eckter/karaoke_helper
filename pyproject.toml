@@ -13,6 +13,10 @@ pygame = "^2.6.1"
 pathlib = "^1.0.1"
 yt-dlp = "^2024.9.27"
 
+[tool.poetry.group.checks.dependencies]
+black = "^24.8.0"
+isort = "^5.13.2"
+
 [tool.poetry.scripts]
 karaoke_helper = 'karaoke_helper.__main__:entrypoint'
 
