@@ -2,7 +2,7 @@ import librosa
 import numpy as np
 import subprocess
 import shutil
-import youtube_dl
+import yt_dlp
 import sys
 from pathlib import Path
 
@@ -10,23 +10,28 @@ AudioSpectrogram = np.typing.ArrayLike
 
 
 def load_yt_url(url: str) -> Path:
-    video_info = youtube_dl.YoutubeDL().extract_info(
-        url=url, download=False
-    )
-    out = Path(f"cache/raw/{video_info['title']}.mp3")
+    out_name = "".join(c for c in url if c.isalnum()) + ".m4a"
+    out_name = out_name[-32:]
+    out = Path(f"cache/raw/{out_name}")
     if out.is_file():
         print("mp3 file is already cached")
         return out
-    out.parent.mkdir(exists_ok=True)
-    options = {
-        'format': 'bestaudio/best',
-        'keepvideo': False,
-        'outtmpl': str(out),
+    out.parent.mkdir(exist_ok=True)
+
+    yt_opts = {
+        "cachedir": "cache/yt/",
+        "format": "m4a",
+        "outtmpl": str(out),
+        "postprocessors": [{  # Extract audio using ffmpeg
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "m4a",
+        }],
     }
-    print(options)
-    with youtube_dl.YoutubeDL(options) as ydl:
-        ydl.download([video_info["webpage_url"]])
-    print("mp3 downloaded successfully")
+    with yt_dlp.YoutubeDL(yt_opts) as ydl:
+        error_code = ydl.download(url)
+    if error_code:
+        print(f"failed to download audio: {error_code}")
+    print("audio downloaded successfully")
     return out
 
 
