@@ -13,6 +13,10 @@ spleeter = "^2.4.0"
 pygame = "^2.6.1"
 
 
+[tool.poetry.scripts]
+karaoke_helper = 'karaoke_helper.__main__:entrypoint'
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
