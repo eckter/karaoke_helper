@@ -1,0 +1,32 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Flake8
+        run: |
+          poetry run pflake8 --config ./pyproject.toml
+      - name: Black
+        run: |
+          poetry run black . --check
+      - name: Isort
+        run: |
+          poetry run isort . --check
