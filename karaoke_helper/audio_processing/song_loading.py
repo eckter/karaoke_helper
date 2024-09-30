@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import sys
@@ -15,7 +16,7 @@ def load_yt_url(url: str) -> Path:
     out_name = out_name[-32:]
     out = Path(f"cache/raw/{out_name}")
     if out.is_file():
-        print("mp3 file is already cached")
+        print("audio file is already cached")
         return out
     out.parent.mkdir(exist_ok=True)
 
@@ -38,16 +39,21 @@ def load_yt_url(url: str) -> Path:
     return out
 
 
-def split_mp3_vocals(raw: Path) -> Path:
-    out = Path(f"cache/split/{raw.name}")
+def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
+    out = Path(f"cache/split/{raw.stem}.wav")
     if out.is_file():
         print("split file already cached")
         return out
-    cmd = f"python -m spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
+    cmd = f"poetry -C {spleeter_path} run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
     cmd.append("{instrument}.{codec}")
     cmd.append(str(raw))
     print(" ".join(cmd))
-    subprocess.check_call(cmd)
+    env = os.environ.copy()
+    if "VIRTUAL_ENV" in env:
+        del env["VIRTUAL_ENV"]
+    subprocess.check_call(cmd, env=env)
+    print("splitting done")
+    out.parent.mkdir(exist_ok=True)
     shutil.copy("cache/spleeter_out/vocals.wav", out)
     return out
 
