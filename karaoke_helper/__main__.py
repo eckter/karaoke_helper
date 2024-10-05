@@ -12,9 +12,8 @@ def entrypoint():
     raw = load_yt_url(sys.argv[1])
     split = split_vocals(raw)
     s = load_file(split)
-    pitches = spectrogram_to_pitches(s)
-    img = pygame.surfarray.make_surface(np.flip(pitches, axis=1))
-    runner = Runner(img)
+    pitches = np.flip(spectrogram_to_pitches(s), axis=1)
+    runner = Runner(pitches)
     runner.run()
 
 

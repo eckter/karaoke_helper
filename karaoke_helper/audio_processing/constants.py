@@ -27,6 +27,7 @@ class AbsoluteNote:
 
 
 # https://en.wikipedia.org/wiki/Vocal_range#Operatic_six_basic_voice_types
+# Highest note has been removed so that highest B can wrap back to lowest C
 SINGABLE_NOTE_MAPPING = SortedDict(
     {
         65.40639: AbsoluteNote(Note.C, 2),
@@ -77,8 +78,14 @@ SINGABLE_NOTE_MAPPING = SortedDict(
         880.0000: AbsoluteNote(Note.A, 5),
         932.3275: AbsoluteNote(Note.AS, 5),
         987.7666: AbsoluteNote(Note.B, 5),
-        1046.502: AbsoluteNote(Note.C, 6),
     }
 )
 
 SINGABLE_NOTE_FREQUENCIES = np.array(SINGABLE_NOTE_MAPPING.keys())
+
+# Threshold where we go from one note to the next
+# (average between any pair of frequencies)
+# (not technically correct as it should be logarithmic but good enough)
+SINGABLE_NOTE_BOUNDARIES = np.convolve(
+    SINGABLE_NOTE_FREQUENCIES, np.ones(2) / 2, mode="valid"
+)
