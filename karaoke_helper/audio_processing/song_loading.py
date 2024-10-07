@@ -7,7 +7,7 @@ import librosa
 import numpy as np
 import yt_dlp
 
-AudioSpectrogram = np.typing.ArrayLike
+from karaoke_helper.helpers.typing import Spectrogram
 
 
 def load_yt_url(url: str) -> Path:
@@ -44,7 +44,9 @@ def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
         print("split file already cached")
         return out
     if not spleeter_path.is_dir():
-        raise RuntimeError("Missing spleeter install: run `git submodule update --recursive`")
+        raise RuntimeError(
+            "Missing spleeter install: run `git submodule update --recursive`"
+        )
     install_cmd = f"poetry -C {spleeter_path} install".split()
     run_cmd = f"poetry -C {spleeter_path} run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
     run_cmd.append("{instrument}.{codec}")
@@ -62,6 +64,6 @@ def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
     return out
 
 
-def load_file(vocals: Path) -> AudioSpectrogram:
+def load_file(vocals: Path) -> Spectrogram:
     y, sr = librosa.load(vocals, duration=20)
     return np.abs(librosa.stft(y))

@@ -1,11 +1,11 @@
 import librosa
 import numpy as np
 
+from ..helpers.typing import Pitches, Spectrogram
 from .constants import SINGABLE_NOTE_BOUNDARIES, SINGABLE_NOTE_FREQUENCIES
-from .song_loading import AudioSpectrogram
 
 
-def spectrogram_to_pitches(spectrogram: AudioSpectrogram) -> np.typing.ArrayLike:
+def spectrogram_to_pitches(spectrogram: Spectrogram) -> Pitches:
     pitches, magnitudes = librosa.piptrack(
         S=spectrogram,
         fmin=SINGABLE_NOTE_FREQUENCIES[0],

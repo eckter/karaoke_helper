@@ -1,11 +1,10 @@
 import sys
 
-import numpy as np
-import pygame
+from karaoke_helper.runner import Runner
+from karaoke_helper.ui.ui import UI
 
 from .audio_processing.pitch_tracker import spectrogram_to_pitches
 from .audio_processing.song_loading import load_file, load_yt_url, split_vocals
-from .ui.runner import Runner
 
 
 def entrypoint():
@@ -13,7 +12,7 @@ def entrypoint():
     split = split_vocals(raw)
     s = load_file(split)
     pitches = spectrogram_to_pitches(s)
-    runner = Runner(pitches)
+    runner = Runner(UI(pitches))
     runner.run()
 
 
