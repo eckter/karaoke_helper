@@ -43,14 +43,19 @@ def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
     if out.is_file():
         print("split file already cached")
         return out
-    cmd = f"poetry -C {spleeter_path} run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
-    cmd.append("{instrument}.{codec}")
-    cmd.append(str(raw))
-    print(" ".join(cmd))
+    if not spleeter_path.is_dir():
+        raise RuntimeError("Missing spleeter install: run `git submodule update --recursive`")
+    install_cmd = f"poetry -C {spleeter_path} install".split()
+    run_cmd = f"poetry -C {spleeter_path} run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
+    run_cmd.append("{instrument}.{codec}")
+    run_cmd.append(str(raw))
     env = os.environ.copy()
     if "VIRTUAL_ENV" in env:
         del env["VIRTUAL_ENV"]
-    subprocess.check_call(cmd, env=env)
+    print(" ".join(install_cmd))
+    subprocess.check_call(install_cmd, env=env)
+    print(" ".join(run_cmd))
+    subprocess.check_call(run_cmd, env=env)
     print("splitting done")
     out.parent.mkdir(exist_ok=True)
     shutil.copy("cache/spleeter_out/vocals.wav", out)
