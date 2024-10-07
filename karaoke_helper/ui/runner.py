@@ -15,14 +15,14 @@ class Runner:
     def __init__(self, pitches):
         self.width = 1400
         self.height = 700
-        self.background = self.pitches_to_images(pitches)
+        self.background = self.pitches_to_images(pitches, True)
 
         self.sample_rate = 44100  # Sample rate in Hz
         self.window_size = 2048  # Window size for STFT
-        self.raw_audio_buffer = SlidingBuffer(self.window_size, 1)
-        self.notes_buffer = SlidingBuffer(self.width, len(SINGABLE_NOTE_FREQUENCIES))
+        self.raw_audio_buffer = SlidingBuffer(self.window_size, 1, self.window_size * 255)
+        self.notes_buffer = SlidingBuffer(self.width, len(SINGABLE_NOTE_FREQUENCIES), self.width * 4)
 
-    def pitches_to_images(self, pitches):
+    def pitches_to_images(self, pitches, spread_octaves: bool):
         # up = higher note, that requires a flip
         pitches = np.flip(pitches, axis=1)
 
@@ -33,11 +33,13 @@ class Runner:
         # Set a threshold for minimal values
         # pitches[pitches < 5] = 0
 
-        # Split out the result over octaves (with lower weight)
-        accumulated = np.zeros_like(pitches)
-        for i in range(int(pitches.shape[1] / 12)):
-            accumulated += np.roll(pitches, i * 12, axis=1)
-        pitches = 0.9 * pitches + 0.1 * accumulated
+        if spread_octaves:
+            # Split out the result over octaves (with lower weight)
+            # (makes it easier to sing the same not at a different octave)
+            accumulated = np.zeros_like(pitches)
+            for i in range(int(pitches.shape[1] / 12)):
+                accumulated += np.roll(pitches, i * 12, axis=1)
+            pitches = 0.8 * pitches + 0.2 * accumulated
 
         # Upscale to match the window size
         pitches = np.repeat(pitches, int(self.height / pitches.shape[1]), axis=1)
@@ -73,6 +75,6 @@ class Runner:
                     if event.type == pygame.QUIT:
                         return
 
-                self.background = self.pitches_to_images(self.notes_buffer.get())
+                self.background = self.pitches_to_images(self.notes_buffer.get(), False)
                 window_surface.blit(self.background, (0, 0))
                 pygame.display.update()
