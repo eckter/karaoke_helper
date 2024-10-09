@@ -65,5 +65,5 @@ def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
 
 
 def load_file(vocals: Path) -> Spectrogram:
-    y, sr = librosa.load(vocals, duration=20)
+    y, sr = librosa.load(vocals)
     return np.abs(librosa.stft(y))

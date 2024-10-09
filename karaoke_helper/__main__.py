@@ -12,7 +12,7 @@ def entrypoint():
     split = split_vocals(raw)
     s = load_file(split)
     pitches = spectrogram_to_pitches(s)
-    runner = Runner(UI(pitches))
+    runner = Runner(pitches, UI())
     runner.run()
 
 

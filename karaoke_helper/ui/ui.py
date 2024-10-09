@@ -5,18 +5,28 @@ from karaoke_helper.helpers.typing import Pitches
 
 
 class UI:
-    def __init__(self, pitches: Pitches):
+    def __init__(self):
         pygame.init()
         pygame.display.set_caption("karaoke helper")
         self._width = 1400
         self._height = 700
-        self._background = self._pitches_to_images(pitches, True)
         self._window_surface = pygame.display.set_mode((self._width, self._height))
         self._is_running = True
 
-    def render_pitches(self, pitches: Pitches):
-        self._background = self._pitches_to_images(pitches, False)
-        self._window_surface.blit(self._background, (0, 0))
+    def render_pitches(self, live_pitches: Pitches, ref_pitches: Pitches):
+        live_pitches_img = self._pitches_to_images(
+            live_pitches, False, self._width // 2
+        )
+        live_pitches_img.set_alpha(128)
+        ref_pitches_img = self._pitches_to_images(ref_pitches, True, self._width)
+        self._window_surface.blit(ref_pitches_img, (0, 0))
+        self._window_surface.blit(live_pitches_img, (0, 0))
+        pygame.draw.line(
+            self._window_surface,
+            (255, 0, 0),
+            (self._width / 2, 0),
+            (self._width / 2, self._height),
+        )
         pygame.display.update()
 
     def is_running(self) -> bool:
@@ -26,7 +36,7 @@ class UI:
         return self._is_running
 
     def _pitches_to_images(
-        self, pitches: Pitches, spread_octaves: bool
+        self, pitches: Pitches, spread_octaves: bool, width: int
     ) -> pygame.Surface:
         # up = higher note, that requires a flip
         pitches = np.flip(pitches, axis=1)
@@ -47,10 +57,10 @@ class UI:
             pitches = 0.8 * pitches + 0.2 * accumulated
 
         # Upscale to match the window size
-        pitches = np.repeat(pitches, int(self._height / pitches.shape[1]), axis=1)
-        pitches = np.repeat(pitches, int(self._width / pitches.shape[0]), axis=0)
+        surface = pygame.surfarray.make_surface(pitches)
+        surface = pygame.transform.scale(surface, (width, self._height))
 
-        return pygame.surfarray.make_surface(pitches)
+        return surface
 
     @staticmethod
     def _shift_with_padding(array: np.ndarray, n: int) -> np.ndarray:
