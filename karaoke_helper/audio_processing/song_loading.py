@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+from typing import Tuple
 
 import librosa
 import numpy as np
@@ -38,11 +39,14 @@ def load_yt_url(url: str) -> Path:
     return out
 
 
-def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
-    out = Path(f"cache/split/{raw.stem}.wav")
-    if out.is_file():
+def split_vocals(
+    raw: Path, spleeter_path: Path = Path("spleeter")
+) -> Tuple[Path, Path]:
+    vocals = Path(f"cache/split/{raw.stem}.vocals.wav")
+    instru = Path(f"cache/split/{raw.stem}.instru.wav")
+    if vocals.is_file() and instru.is_file():
         print("split file already cached")
-        return out
+        return vocals, instru
     if not spleeter_path.is_dir():
         raise RuntimeError(
             "Missing spleeter install: run `git submodule update --recursive`"
@@ -59,11 +63,16 @@ def split_vocals(raw: Path, spleeter_path: Path = Path("spleeter")) -> Path:
     print(" ".join(run_cmd))
     subprocess.check_call(run_cmd, env=env)
     print("splitting done")
-    out.parent.mkdir(exist_ok=True)
-    shutil.copy("cache/spleeter_out/vocals.wav", out)
-    return out
+    vocals.parent.mkdir(exist_ok=True)
+    shutil.move("cache/spleeter_out/vocals.wav", vocals)
+    shutil.move("cache/spleeter_out/accompaniment.wav", instru)
+    return vocals, instru
 
 
-def load_file(vocals: Path) -> Spectrogram:
+def load_file_spectrogram(vocals: Path) -> Spectrogram:
     y, sr = librosa.load(vocals)
     return np.abs(librosa.stft(y))
+
+
+def load_file_raw(vocals: Path) -> Tuple[np.ndarray, int]:
+    return librosa.load(vocals)

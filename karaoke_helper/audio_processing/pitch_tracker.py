@@ -5,6 +5,10 @@ from ..helpers.typing import Pitches, Spectrogram
 from .constants import SINGABLE_NOTE_BOUNDARIES, SINGABLE_NOTE_FREQUENCIES
 
 
+def audio_to_pitches(raw_audio: np.ndarray) -> Pitches:
+    return spectrogram_to_pitches(np.abs(librosa.stft(raw_audio)))
+
+
 def spectrogram_to_pitches(spectrogram: Spectrogram) -> Pitches:
     pitches, magnitudes = librosa.piptrack(
         S=spectrogram,

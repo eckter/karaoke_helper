@@ -5,8 +5,7 @@ import numpy as np
 import sounddevice as sd
 
 from karaoke_helper.audio_processing.constants import SINGABLE_NOTE_FREQUENCIES
-from karaoke_helper.audio_processing.pitch_tracker import \
-    spectrogram_to_pitches
+from karaoke_helper.audio_processing.pitch_tracker import spectrogram_to_pitches
 from karaoke_helper.helpers.sliding_buffer import SlidingBuffer
 from karaoke_helper.helpers.typing import Pitches
 from karaoke_helper.ui.ui import UI
