@@ -89,3 +89,13 @@ SINGABLE_NOTE_FREQUENCIES = np.array(SINGABLE_NOTE_MAPPING.keys())
 SINGABLE_NOTE_BOUNDARIES = np.convolve(
     SINGABLE_NOTE_FREQUENCIES, np.ones(2) / 2, mode="valid"
 )
+
+# Upscale the frequencies used, just to make it easier
+# to figure out when we're a little off
+halfway_values = (SINGABLE_NOTE_FREQUENCIES[:-1] + SINGABLE_NOTE_FREQUENCIES[1:]) / 2
+UPSCALE_SINGABLE_NOTE_FREQUENCIES = np.insert(
+    SINGABLE_NOTE_FREQUENCIES, range(1, len(SINGABLE_NOTE_FREQUENCIES)), halfway_values
+)
+UPSCALE_SINGABLE_NOTE_BOUNDARIES = np.convolve(
+    UPSCALE_SINGABLE_NOTE_FREQUENCIES, np.ones(2) / 2, mode="valid"
+)

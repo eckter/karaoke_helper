@@ -4,7 +4,10 @@ import librosa
 import numpy as np
 import sounddevice as sd
 
-from karaoke_helper.audio_processing.constants import SINGABLE_NOTE_FREQUENCIES
+from karaoke_helper.audio_processing.constants import (
+    UPSCALE_SINGABLE_NOTE_BOUNDARIES,
+    UPSCALE_SINGABLE_NOTE_FREQUENCIES,
+)
 from karaoke_helper.audio_processing.pitch_tracker import spectrogram_to_pitches
 from karaoke_helper.helpers.sliding_buffer import SlidingBuffer
 from karaoke_helper.helpers.typing import Pitches
@@ -21,7 +24,7 @@ class Runner:
         self.note_buffer_size = 700
         self.notes_buffer = SlidingBuffer(
             self.note_buffer_size,
-            len(SINGABLE_NOTE_FREQUENCIES),
+            len(UPSCALE_SINGABLE_NOTE_FREQUENCIES),
             self.note_buffer_size * 4,
         )
         self.live_note_times = SlidingBuffer(
@@ -54,7 +57,11 @@ class Runner:
                 callback_time - self.live_note_times.get()[-10, 0]
                 > expected_time_between_samples * 10
             ):
-                pitches = spectrogram_to_pitches(s)
+                pitches = spectrogram_to_pitches(
+                    s,
+                    frequencies=UPSCALE_SINGABLE_NOTE_FREQUENCIES,
+                    boundaries=UPSCALE_SINGABLE_NOTE_BOUNDARIES,
+                )
                 pitches = pitches.mean(axis=0)[None, :]
                 self.notes_buffer.add(pitches)
                 self.live_note_times.add(np.ones((len(pitches), 1)) * callback_time)
