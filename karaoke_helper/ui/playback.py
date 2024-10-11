@@ -6,7 +6,7 @@ import simpleaudio as sa
 
 class Playback:
     def __init__(self, audio: np.ndarray, sr: int):
-        audio *= 32767 / max(abs(audio))
+        audio *= 32767 / (max(abs(audio)) * 4)
         audio = audio.astype(np.int16)
         self.audio = audio
         self.sr = sr
