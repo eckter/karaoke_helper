@@ -16,7 +16,7 @@ Eventually, I could add playback, lyrics transcription, and other cool stuff.
 1. Poetry
 2. [spleeter](https://github.com/deezer/spleeter), to be cloned at the root of the repo (or clone this with `--recursive`). I wish I could just handle it as a normal library, but versions are incompatible, and it can only be used with its CLI
 3. ffmpeg
-4. There may be extra requirement to make mic work, depending on the OS. I wans't extra careful about what I needed to make it run, google any error message and contact me to add stuff to this list
+4. (optional) For lyrics transcription, an AssemblyAI key should be set in env variable `ASSEMBLY_AI_API_KEY`. It costs roughly $0.01 credits per song.
 
 ### Usage
 
