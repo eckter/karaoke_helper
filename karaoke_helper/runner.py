@@ -1,4 +1,5 @@
 import time
+from typing import List
 
 import librosa
 import numpy as np
@@ -8,6 +9,7 @@ from karaoke_helper.audio_processing.constants import (
     UPSCALE_SINGABLE_NOTE_BOUNDARIES,
     UPSCALE_SINGABLE_NOTE_FREQUENCIES,
 )
+from karaoke_helper.audio_processing.lyrics_transcription import Transcript
 from karaoke_helper.audio_processing.pitch_tracker import spectrogram_to_pitches
 from karaoke_helper.helpers.sliding_buffer import SlidingBuffer
 from karaoke_helper.helpers.typing import Pitches
@@ -15,7 +17,7 @@ from karaoke_helper.ui.ui import UI
 
 
 class Runner:
-    def __init__(self, ref_pitches: Pitches, ui: UI):
+    def __init__(self, ref_pitches: Pitches, transcript: Transcript, ui: UI):
         self.sample_rate = 44100  # Sample rate in Hz
         self.window_size = 2048  # Window size for STFT
         self.raw_audio_buffer = SlidingBuffer(
@@ -33,6 +35,7 @@ class Runner:
         self.ui = ui
         self.ref_pitches = ref_pitches
         self.scroll_speed_s_per_screen = 20
+        self.transcript = transcript
 
     @staticmethod
     def shift_with_padding(array: np.ndarray, n: int, axis: int) -> np.ndarray:
@@ -81,7 +84,9 @@ class Runner:
                     t - self.scroll_speed_s_per_screen / 2,
                     t + self.scroll_speed_s_per_screen / 2,
                 )
-                self.ui.render_pitches(live_pitches, ref_pitches)
+                self.ui.render(
+                    live_pitches, ref_pitches, t, self.scroll_speed_s_per_screen
+                )
 
 
 def get_last_seconds_live(

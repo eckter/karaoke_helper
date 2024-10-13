@@ -25,7 +25,7 @@ def entrypoint():
         ]
     )
     playbacks.start()
-    runner = Runner(pitches, UI())
+    runner = Runner(pitches, transcription, UI(transcription))
     runner.run()
 
 
