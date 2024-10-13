@@ -67,7 +67,7 @@ class UI:
 
         # Smooth out the value along the time axis
         if spread_octaves:
-            for _ in range(10):
+            for _ in range(1):
                 pitches = 0.6 * pitches + 0.5 * self._shift_with_padding(pitches, 1)
 
         # Set a threshold for minimal values
@@ -79,7 +79,7 @@ class UI:
             accumulated = np.zeros_like(pitches)
             for i in range(int(pitches.shape[1] / 12)):
                 accumulated += np.roll(pitches, i * 12, axis=1)
-            pitches = 0.9 * pitches + 0.1 * accumulated
+            pitches = 0.99 * pitches + 0.01 * accumulated
 
         # Upscale to match the window size
         surface = pygame.surfarray.make_surface(pitches)

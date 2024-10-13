@@ -34,7 +34,7 @@ class Runner:
         )
         self.ui = ui
         self.ref_pitches = ref_pitches
-        self.scroll_speed_s_per_screen = 20
+        self.scroll_speed_s_per_screen = 10
         self.transcript = transcript
 
     @staticmethod
