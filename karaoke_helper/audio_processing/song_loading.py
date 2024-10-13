@@ -17,7 +17,7 @@ def load_yt_url(artist: str, title: str) -> Path:
     if out.is_file():
         print("audio file is already cached")
         return out
-    out.parent.mkdir(exist_ok=True)
+    out.parent.mkdir(exist_ok=True, parents=True)
 
     yt_opts = {
         "cachedir": "cache/yt/",
@@ -64,7 +64,7 @@ def split_vocals(
     print(" ".join(run_cmd))
     subprocess.check_call(run_cmd, env=env)
     print("splitting done")
-    vocals.parent.mkdir(exist_ok=True)
+    vocals.parent.mkdir(exist_ok=True, parents=True)
     shutil.move("cache/spleeter_out/vocals.wav", vocals)
     shutil.move("cache/spleeter_out/accompaniment.wav", instru)
     return vocals, instru

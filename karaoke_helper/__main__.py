@@ -17,7 +17,7 @@ def entrypoint():
     instru_audio, instru_sr = load_file_raw(instru)
 
     pitches = audio_to_pitches(vocals_audio)
-    transcription = transcribe_lyrics(vocals)
+    transcription = transcribe_lyrics(vocals, artist, title)
 
     playbacks = Playbacks(
         [
