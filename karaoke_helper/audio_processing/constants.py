@@ -84,18 +84,18 @@ SINGABLE_NOTE_MAPPING = SortedDict(
 SINGABLE_NOTE_FREQUENCIES = np.array(SINGABLE_NOTE_MAPPING.keys())
 
 # Threshold where we go from one note to the next
-# (average between any pair of frequencies)
-# (not technically correct as it should be logarithmic but good enough)
-SINGABLE_NOTE_BOUNDARIES = np.convolve(
-    SINGABLE_NOTE_FREQUENCIES, np.ones(2) / 2, mode="valid"
-)
+# We pick the average between two notes on the same exponential scale
+# (next note = prev note * 2^(1/12), we use 1/24 here)
+SINGABLE_NOTE_BOUNDARIES = SINGABLE_NOTE_FREQUENCIES[:-1] * (2 ** (1 / 24))
 
 # Upscale the frequencies used, just to make it easier
-# to figure out when we're a little off
-halfway_values = (SINGABLE_NOTE_FREQUENCIES[:-1] + SINGABLE_NOTE_FREQUENCIES[1:]) / 2
-UPSCALE_SINGABLE_NOTE_FREQUENCIES = np.insert(
-    SINGABLE_NOTE_FREQUENCIES, range(1, len(SINGABLE_NOTE_FREQUENCIES)), halfway_values
+# to figure out when we're a little off. Whole note ranges aren't
+# really precise. We build it by interlacing notes and boundaries.
+UPSCALE_SINGABLE_NOTE_FREQUENCIES = np.zeros(
+    len(SINGABLE_NOTE_FREQUENCIES) + len(SINGABLE_NOTE_BOUNDARIES)
 )
-UPSCALE_SINGABLE_NOTE_BOUNDARIES = np.convolve(
-    UPSCALE_SINGABLE_NOTE_FREQUENCIES, np.ones(2) / 2, mode="valid"
+UPSCALE_SINGABLE_NOTE_FREQUENCIES[::2] = SINGABLE_NOTE_FREQUENCIES
+UPSCALE_SINGABLE_NOTE_FREQUENCIES[1::2] = SINGABLE_NOTE_BOUNDARIES
+UPSCALE_SINGABLE_NOTE_BOUNDARIES = UPSCALE_SINGABLE_NOTE_FREQUENCIES[:-1] * (
+    2 ** (1 / 24)
 )

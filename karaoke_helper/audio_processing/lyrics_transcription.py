@@ -67,7 +67,9 @@ def transcribe_lyrics(vocals_file: Path, artist: str, title: str) -> Transcript:
 # (we still need the actual transcription for timing data)
 def get_known_words(artist, title) -> List[str]:
     try:
-        out_path = Path(f"cache/lyrics/raw.txt")
+        out_path = Path(
+            f"cache/lyrics/{artist.replace(' ', '_')}--{title.replace(' ', '_')}.raw.txt"
+        )
         if out_path.is_file():
             print("raw lyrics are already cached")
             raw_lyrics = out_path.read_text()
