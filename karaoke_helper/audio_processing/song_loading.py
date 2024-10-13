@@ -11,9 +11,8 @@ import yt_dlp
 from karaoke_helper.helpers.typing import Spectrogram
 
 
-def load_yt_url(url: str) -> Path:
-    out_name = "".join(c for c in url if c.isalnum()) + ".m4a"
-    out_name = out_name[-32:]
+def load_yt_url(artist: str, title: str) -> Path:
+    out_name = f"{artist.replace(' ', '_')[-16:]}--{title.replace(' ', '_')[-16:]}.m4a"
     out = Path(f"cache/raw/{out_name}")
     if out.is_file():
         print("audio file is already cached")
@@ -22,6 +21,8 @@ def load_yt_url(url: str) -> Path:
 
     yt_opts = {
         "cachedir": "cache/yt/",
+        "default_search": "ytsearch",
+        "noplaylist": True,
         "format": "m4a",
         "outtmpl": str(out),
         "postprocessors": [
@@ -32,7 +33,7 @@ def load_yt_url(url: str) -> Path:
         ],
     }
     with yt_dlp.YoutubeDL(yt_opts) as ydl:
-        error_code = ydl.download(url)
+        error_code = ydl.download([f'"{artist}" "{title}"'])
     if error_code:
         print(f"failed to download audio: {error_code}")
     print("audio downloaded successfully")

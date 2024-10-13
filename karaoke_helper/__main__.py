@@ -10,7 +10,8 @@ from .audio_processing.song_loading import load_file_raw, load_yt_url, split_voc
 
 
 def entrypoint():
-    raw = load_yt_url(sys.argv[1])
+    artist, title = sys.argv[1], sys.argv[2]
+    raw = load_yt_url(artist, title)
     vocals, instru = split_vocals(raw)
     vocals_audio, vocals_sr = load_file_raw(vocals)
     instru_audio, instru_sr = load_file_raw(instru)
