@@ -101,7 +101,9 @@ def get_last_seconds_live(
     res = pitches[index:]
     if note_times[-2] > 0:
         frame_per_seconds = (n - index) / (note_times[-1] - note_times[index])
-        res = left_pad(res, frame_per_seconds * duration)
+        expected_frames = int(frame_per_seconds * duration)
+        missing_frames = expected_frames - len(res)
+        res = left_pad(res, missing_frames)
     return res
 
 
@@ -110,13 +112,21 @@ def get_time_slice(pitches: Pitches, start: float, end: float):
     frame_per_seconds = len(pitches) / total_recording_length
     start_frame = int(start * frame_per_seconds)
     end_frame = int(end * frame_per_seconds)
-    min_frames = end_frame - start_frame
-    start_frame = max(0, start_frame)
-    return left_pad(pitches[start_frame:end_frame], min_frames)
+    missing_frames_start = -start_frame
+    missing_frames_end = end_frame - len(pitches)
+    res = pitches[max(0, start_frame) : end_frame]
+    res = left_pad(res, missing_frames_start)
+    res = right_pad(res, missing_frames_end)
+    return res
 
 
-def left_pad(pitches: Pitches, min_frames: int):
-    missing_frames = int(min_frames - len(pitches))
-    if missing_frames <= 0:
+def left_pad(pitches: Pitches, extra_frames: int):
+    if extra_frames <= 0:
         return pitches
-    return np.pad(pitches, ((missing_frames, 0), (0, 0)))
+    return np.pad(pitches, ((extra_frames, 0), (0, 0)))
+
+
+def right_pad(pitches: Pitches, extra_frames: int):
+    if extra_frames <= 0:
+        return pitches
+    return np.pad(pitches, ((0, extra_frames), (0, 0)))
