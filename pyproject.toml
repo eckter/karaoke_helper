@@ -5,7 +5,7 @@ description = ""
 authors = ["Eloi Charpentier <eloi.charpentier.42@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.10,<3.11"
 librosa = "^0.11.0"
 llvmlite = "^0.45.1"
 matplotlib = "^3.10.7"
@@ -16,9 +16,9 @@ sortedcontainers = "^2.4.0"
 sounddevice = "^0.5.3"
 simpleaudio = "^1.0.4"
 assemblyai = "^0.45.1"
+spleeter = "^2.4.2"
 
 [tool.poetry.group.checks.dependencies]
-black = "^24.8.0"
 isort = "^5.13.2"
 
 [tool.poetry.scripts]

@@ -40,20 +40,14 @@ def load_yt_url(artist: str, title: str) -> Path:
     return out
 
 
-def split_vocals(
-    raw: Path, spleeter_path: Path = Path("spleeter")
-) -> Tuple[Path, Path]:
+def split_vocals(raw: Path) -> Tuple[Path, Path]:
     vocals = Path(f"cache/split/{raw.stem}.vocals.wav")
     instru = Path(f"cache/split/{raw.stem}.instru.wav")
     if vocals.is_file() and instru.is_file():
         print("split file already cached")
         return vocals, instru
-    if not spleeter_path.is_dir():
-        raise RuntimeError(
-            "Missing spleeter install: run `git submodule update --recursive`"
-        )
-    install_cmd = f"poetry -C {spleeter_path} install".split()
-    run_cmd = f"poetry -C {spleeter_path} run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
+    install_cmd = f"poetry install".split()
+    run_cmd = f"poetry run spleeter separate -p spleeter:2stems -o cache/spleeter_out/ -f".split()
     run_cmd.append("{instrument}.{codec}")
     run_cmd.append(str(raw))
     env = os.environ.copy()
