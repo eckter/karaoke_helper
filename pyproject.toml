@@ -6,16 +6,16 @@ authors = ["Eloi Charpentier <eloi.charpentier.42@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-librosa = "^0.10.2.post1"
-llvmlite = "^0.43.0"
-matplotlib = "^3.9.2"
+librosa = "^0.11.0"
+llvmlite = "^0.45.1"
+matplotlib = "^3.10.7"
 pygame = "^2.6.1"
 pathlib = "^1.0.1"
-yt-dlp = "^2024.9.27"
+yt-dlp = "^2025.10.14"
 sortedcontainers = "^2.4.0"
-sounddevice = "^0.5.0"
+sounddevice = "^0.5.3"
 simpleaudio = "^1.0.4"
-assemblyai = "^0.34.0"
+assemblyai = "^0.45.1"
 
 [tool.poetry.group.checks.dependencies]
 black = "^24.8.0"
