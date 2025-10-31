@@ -1,4 +1,5 @@
 import sys
+from dotenv import load_dotenv
 
 from karaoke_helper.audio_processing.lyrics_transcription import transcribe_lyrics
 from karaoke_helper.runner import Runner
@@ -10,6 +11,7 @@ from .audio_processing.song_loading import load_file_raw, load_yt_url, split_voc
 
 
 def entrypoint():
+    load_dotenv()
     artist, title = sys.argv[1], sys.argv[2]
     raw = load_yt_url(artist, title)
     vocals, instru = split_vocals(raw)

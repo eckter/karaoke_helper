@@ -17,6 +17,7 @@ sounddevice = "^0.5.3"
 simpleaudio = "^1.0.4"
 assemblyai = "^0.45.1"
 spleeter = "^2.4.2"
+python-dotenv = "^1.2.1"
 
 [tool.poetry.group.checks.dependencies]
 isort = "^5.13.2"
