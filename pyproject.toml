@@ -5,13 +5,13 @@ description = ""
 authors = ["Eloi Charpentier <eloi.charpentier.42@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.12"
 librosa = "^0.11.0"
 llvmlite = "^0.45.1"
 matplotlib = "^3.10.7"
 pygame = "^2.6.1"
 pathlib = "^1.0.1"
-yt-dlp = "^2025.10.14"
+yt-dlp = "^2025.10.22"
 sortedcontainers = "^2.4.0"
 sounddevice = "^0.5.3"
 simpleaudio = "^1.0.4"
